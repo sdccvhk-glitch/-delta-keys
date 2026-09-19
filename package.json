@@ -1,0 +1,15 @@
+{
+  "name": "delta-keys-upi-bank-alert",
+  "version": "1.1.0",
+  "private": true,
+  "description": "DELTA.KEYS exact-amount UPI QR with optional bank-alert automatic verification",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "upiagent": "0.2.2"
+  }
+}
