@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DELTA.KEYS — Admin Login</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:#070b14;color:#fff}body{display:flex;align-items:center;justify-content:center;padding:20px}.card{width:100%;max-width:390px;background:#101827;border:1px solid #263653;border-radius:20px;padding:28px;box-shadow:0 18px 50px #0008}.logo{text-align:center;font-size:34px}.title{text-align:center;font-size:25px;font-weight:800;margin:8px 0 4px}.sub{text-align:center;color:#91a0b8;margin-bottom:24px}label{display:block;color:#b9c6d9;font-size:13px;font-weight:700;margin:14px 0 7px}input{width:100%;padding:14px;border-radius:12px;border:1px solid #344561;background:#0b1220;color:#fff;font-size:16px;outline:none}button{width:100%;margin-top:20px;padding:14px;border:0;border-radius:12px;background:#f4b51f;color:#111827;font-weight:900;font-size:16px;cursor:pointer}.msg{min-height:20px;text-align:center;color:#ff8790;margin-top:14px;font-size:14px}
+</style></head><body><div class="card">
+<div class="logo">🔐</div><div class="title">DELTA.KEYS</div><div class="sub">Admin Panel Login</div>
+<form id="loginForm"><label>Username</label><input id="username" autocomplete="username" required><label>Password</label><input id="password" type="password" autocomplete="current-password" required><button id="loginBtn">Login</button><div id="msg" class="msg"></div></form>
+</div>
+<script>
+const form=document.getElementById('loginForm'),user=document.getElementById('username'),pass=document.getElementById('password'),btn=document.getElementById('loginBtn'),msg=document.getElementById('msg');
+form.addEventListener('submit',async e=>{e.preventDefault();msg.textContent='';btn.disabled=true;btn.textContent='Checking…';
+ const u=user.value.trim(),p=pass.value; if(!u||!p){msg.textContent='Enter username and password.';btn.disabled=false;btn.textContent='Login';return;}
+ const auth='Basic '+btoa(unescape(encodeURIComponent(u+':'+p)));
+ try{
+  const r=await fetch('/api/admin/data',{headers:{Authorization:auth},cache:'no-store'}); const d=await r.json().catch(()=>({}));
+  if(!r.ok) throw Error(d.error||'Invalid username or password.');
+  localStorage.setItem('delta:adminAuth',auth);localStorage.setItem('delta:adminLoginAt',String(Date.now()));
+  document.cookie='delta_admin_auth='+encodeURIComponent(auth)+'; Path=/; Max-Age=86400; SameSite=Lax';
+  window.location.assign('/admin/dashboard');
+ }catch(err){msg.textContent=err.message||'Login failed.';btn.disabled=false;btn.textContent='Login';}
+});
+</script></body></html>
